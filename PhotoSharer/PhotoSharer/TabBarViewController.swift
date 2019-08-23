@@ -10,12 +10,15 @@ import UIKit
 
 class TabBarViewController: UITabBarController {
 
+    let firstViewController = ImagePickerViewController()
+    let secondViewController = CameraViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let firstViewController = ImagePickerViewController()
-        firstViewController.tabBarItem = UITabBarItem(title: "Library", image: UIImage(named: "photoLibrary"), tag: 0)
-        let secondViewController = CameraViewController()
-        secondViewController.tabBarItem = UITabBarItem(title: "Camera", image: UIImage(named: "photoCamera"), tag: 0)
+        
+        firstViewController.tabBarItem = UITabBarItem(title: "Library", image: UIImage(named: "photoLibrary"), tag: 1)
+        
+        secondViewController.tabBarItem = UITabBarItem(title: "Camera", image: UIImage(named: "photoCamera"), tag: 2)
         let tabBarList = [firstViewController, secondViewController]
         viewControllers = tabBarList
         
@@ -31,5 +34,15 @@ class TabBarViewController: UITabBarController {
     @objc func shareButtonTap() {
         print("Share")
     }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        if(item.tag == 1) {
+            firstViewController.reloadAssets()
+        }
+        else if(item.tag == 2) {
+            // Code for item 2
+        }
+    }
+    
     
 }

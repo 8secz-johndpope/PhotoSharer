@@ -16,6 +16,7 @@
 		D33F7E9C230FE62000AB4755 /* ImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */; };
 		D33F7E9F2310030E00AB4755 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */; };
 		D33F7EA12310094800AB4755 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7EA02310094800AB4755 /* CameraViewController.swift */; };
+		D33F7EA32310311C00AB4755 /* PresentImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */; };
 		EFFDDB1604C081A1F3BBFC8D /* Pods_PhotoSharer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429D85C226F1C716B5DFE735 /* Pods_PhotoSharer.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerCell.swift; sourceTree = "<group>"; };
 		D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		D33F7EA02310094800AB4755 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 				D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */,
 				D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */,
 				D33F7EA02310094800AB4755 /* CameraViewController.swift */,
+				D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */,
 			);
 			path = PhotoSharer;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 			files = (
 				D33F7E9F2310030E00AB4755 /* TabBarViewController.swift in Sources */,
 				D33F7EA12310094800AB4755 /* CameraViewController.swift in Sources */,
+				D33F7EA32310311C00AB4755 /* PresentImageViewController.swift in Sources */,
 				D33F7E9C230FE62000AB4755 /* ImagePickerCell.swift in Sources */,
 				D33F7E70230FD53A00AB4755 /* ImagePickerViewController.swift in Sources */,
 				D33F7E6E230FD53A00AB4755 /* AppDelegate.swift in Sources */,
@@ -522,6 +526,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = F3L83SFX87;
 				INFOPLIST_FILE = PhotoSharer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -541,6 +546,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = F3L83SFX87;
 				INFOPLIST_FILE = PhotoSharer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

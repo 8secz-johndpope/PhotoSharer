@@ -38,6 +38,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         collectionView.dataSource = self
         collectionView.register(ImagePickerCell.self, forCellWithReuseIdentifier: "ImagePickerCell")
         collectionView.backgroundColor = .gray
+        imageButton.contentMode = .scaleAspectFit
         imageButton.imageView?.contentMode = .scaleAspectFit
         imageButton.addTarget(self, action: #selector(imageButtonTap), for: .touchUpInside)
         imageButton.layer.borderWidth = 1
@@ -52,7 +53,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.height.equalTo(view.frame.height / 2)
+            make.height.equalTo((view.frame.height / 2 ) - 40)
         }
         
         
@@ -94,7 +95,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             }
         } else {
             imageButton.snp.updateConstraints { (update) in
-                update.height.equalTo(view.frame.height / 2)
+                update.height.equalTo((view.frame.height / 2) - 40)
             }
         }
         UIView.animate(withDuration: 0.3) {
@@ -117,25 +118,28 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         show(alert, sender: nil)
     }
     
-    fileprivate func reloadAssets() {
+    func fetchOptions() ->  PHFetchOptions {
+        let options = PHFetchOptions()
+        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
+        return options
+    }
+    
+    func reloadAssets() {
         NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData, nil)
         assets = nil
-        assets = (PHAsset.fetchAssets(with: PHAssetMediaType.image, options: nil) as! PHFetchResult<AnyObject>)
+        assets = (PHAsset.fetchAssets(with: PHAssetMediaType.image, options: fetchOptions()) as! PHFetchResult<AnyObject>)
         collectionView.reloadData()
-        guard let _assets = assets, _assets.count > 0 else {
+        
+        PHImageManager.default().requestImage(for: assets?[0] as! PHAsset, targetSize: CGSize(width: view.frame.width, height: view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
             NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
-            return
-        }
-        PHImageManager.default().requestImageData(for: assets?[0] as! PHAsset, options: nil) { (_data, _string, orientation, _info) in
-            NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
-            guard let data = _data else {
+            guard image != nil else {
                 return
             }
-            guard let image = UIImage(data: data) else {
-                return
-            }
+
             self.imageButton.setImage(image, for: .normal)
             self.currentImage = image
+            print(self.currentImage)
         }
         
     }
@@ -157,24 +161,35 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        PHImageManager.default().requestImage(for: assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: sideSize, height: sideSize), contentMode: .aspectFill, options: nil) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
+        PHImageManager.default().requestImage(for: assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: sideSize, height: sideSize), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
+            guard image != nil else {
+                return
+            }
+
             (cell as! ImagePickerCell).image = image
         }
+    }
+    
+    private func requestOptions() -> PHImageRequestOptions {
+        let requestOptions = PHImageRequestOptions()
+        // 2
+        requestOptions.isSynchronous = true
+        requestOptions.deliveryMode = .highQualityFormat
+        return requestOptions
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData, nil)
-        PHImageManager.default().requestImageData(for: assets?[indexPath.row] as! PHAsset, options: nil) { (_data, _string, orientation, _info) in
+        
+        PHImageManager.default().requestImage(for: assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: view.frame.width, height: view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
             NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
-            guard let data = _data else {
-                return
-            }
-            guard let image = UIImage(data: data) else {
+            guard image != nil else {
                 return
             }
             self.imageButton.setImage(image, for: .normal)
             self.currentImage = image
+            print(self.currentImage)
         }
     }
     
