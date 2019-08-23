@@ -8,13 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		D33F7E6E230FD53A00AB4755 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E6D230FD53A00AB4755 /* AppDelegate.swift */; };
-		D33F7E70230FD53A00AB4755 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E6F230FD53A00AB4755 /* ViewController.swift */; };
-		D33F7E73230FD53A00AB4755 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D33F7E71230FD53A00AB4755 /* Main.storyboard */; };
+		D33F7E70230FD53A00AB4755 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E6F230FD53A00AB4755 /* ImagePickerViewController.swift */; };
 		D33F7E75230FD53B00AB4755 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D33F7E74230FD53B00AB4755 /* Assets.xcassets */; };
 		D33F7E78230FD53B00AB4755 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D33F7E76230FD53B00AB4755 /* LaunchScreen.storyboard */; };
 		D33F7E83230FD53C00AB4755 /* PhotoSharerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E82230FD53C00AB4755 /* PhotoSharerTests.swift */; };
 		D33F7E8E230FD53C00AB4755 /* PhotoSharerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E8D230FD53C00AB4755 /* PhotoSharerUITests.swift */; };
 		D33F7E9C230FE62000AB4755 /* ImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */; };
+		D33F7E9F2310030E00AB4755 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */; };
+		D33F7EA12310094800AB4755 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7EA02310094800AB4755 /* CameraViewController.swift */; };
 		EFFDDB1604C081A1F3BBFC8D /* Pods_PhotoSharer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429D85C226F1C716B5DFE735 /* Pods_PhotoSharer.framework */; };
 /* End PBXBuildFile section */
 
@@ -41,8 +42,7 @@
 		5DDD82BDA9DAABE8980CEB1F /* Pods-PhotoSharer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoSharer.release.xcconfig"; path = "Target Support Files/Pods-PhotoSharer/Pods-PhotoSharer.release.xcconfig"; sourceTree = "<group>"; };
 		D33F7E6A230FD53A00AB4755 /* PhotoSharer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSharer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D33F7E6D230FD53A00AB4755 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D33F7E6F230FD53A00AB4755 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		D33F7E72230FD53A00AB4755 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D33F7E6F230FD53A00AB4755 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
 		D33F7E74230FD53B00AB4755 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D33F7E77230FD53B00AB4755 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D33F7E79230FD53C00AB4755 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -53,6 +53,8 @@
 		D33F7E8D230FD53C00AB4755 /* PhotoSharerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSharerUITests.swift; sourceTree = "<group>"; };
 		D33F7E8F230FD53C00AB4755 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerCell.swift; sourceTree = "<group>"; };
+		D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		D33F7EA02310094800AB4755 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,12 +126,13 @@
 			isa = PBXGroup;
 			children = (
 				D33F7E6D230FD53A00AB4755 /* AppDelegate.swift */,
-				D33F7E6F230FD53A00AB4755 /* ViewController.swift */,
-				D33F7E71230FD53A00AB4755 /* Main.storyboard */,
+				D33F7E6F230FD53A00AB4755 /* ImagePickerViewController.swift */,
 				D33F7E74230FD53B00AB4755 /* Assets.xcassets */,
 				D33F7E76230FD53B00AB4755 /* LaunchScreen.storyboard */,
 				D33F7E79230FD53C00AB4755 /* Info.plist */,
 				D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */,
+				D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */,
+				D33F7EA02310094800AB4755 /* CameraViewController.swift */,
 			);
 			path = PhotoSharer;
 			sourceTree = "<group>";
@@ -261,7 +264,6 @@
 			files = (
 				D33F7E78230FD53B00AB4755 /* LaunchScreen.storyboard in Resources */,
 				D33F7E75230FD53B00AB4755 /* Assets.xcassets in Resources */,
-				D33F7E73230FD53A00AB4755 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,8 +347,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D33F7E9F2310030E00AB4755 /* TabBarViewController.swift in Sources */,
+				D33F7EA12310094800AB4755 /* CameraViewController.swift in Sources */,
 				D33F7E9C230FE62000AB4755 /* ImagePickerCell.swift in Sources */,
-				D33F7E70230FD53A00AB4755 /* ViewController.swift in Sources */,
+				D33F7E70230FD53A00AB4755 /* ImagePickerViewController.swift in Sources */,
 				D33F7E6E230FD53A00AB4755 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,14 +387,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		D33F7E71230FD53A00AB4755 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D33F7E72230FD53A00AB4755 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		D33F7E76230FD53B00AB4755 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -524,6 +520,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F3L83SFX87;
 				INFOPLIST_FILE = PhotoSharer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -542,6 +539,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F3L83SFX87;
 				INFOPLIST_FILE = PhotoSharer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -37,6 +37,7 @@ class ImagePickerCell: UICollectionViewCell {
         imageView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
+        contentView.layer.borderWidth = 1
         
     }
     
