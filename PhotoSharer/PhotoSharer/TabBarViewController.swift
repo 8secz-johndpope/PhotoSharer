@@ -33,14 +33,18 @@ class TabBarViewController: UITabBarController {
     
     @objc func shareButtonTap() {
         print("Share")
+        if let sharer = selectedViewController as? Sharer {
+            sharer.share()
+        }
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if(item.tag == 1) {
             firstViewController.reloadAssets()
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
         else if(item.tag == 2) {
-            // Code for item 2
+            navigationItem.rightBarButtonItem?.isEnabled = false
         }
     }
     

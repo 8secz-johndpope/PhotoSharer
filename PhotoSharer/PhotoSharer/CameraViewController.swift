@@ -25,7 +25,51 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     var flashMode = AVCaptureDevice.FlashMode.off
     var cameraPosition = AVCaptureDevice.Position.back
     let cameraButton = UIButton()
+    let rotateButton = UIButton()
+    let zoomInButton = UIButton()
+    let zoomOutButton = UIButton()
     let previewView = UIView()
+    
+    
+    var device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+    
+    var scale: CGFloat = 1
+    
+    
+    
+    func changeScaleTo(_ scale: CGFloat) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.01)
+        previewLayer.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+        CATransaction.commit()
+        
+        
+        do {
+            try device?.lockForConfiguration()
+            device?.videoZoomFactor = scale
+            device?.unlockForConfiguration()
+        } catch {
+            print(error)
+        }
+    }
+    
+    @objc func zoomInTap() {
+        guard scale < 4 else {
+            return
+        }
+        scale += 0.25
+        changeScaleTo(scale)
+    }
+    
+    @objc func zoomOutTap() {
+        guard scale > 1 else {
+            return
+        }
+        scale -= 0.25
+        changeScaleTo(scale)
+    }
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,21 +108,66 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         cameraButton.layer.borderColor = UIColor.white.cgColor
         cameraButton.backgroundColor = .lightGray
         
+        rotateButton.setImage(UIImage(named: "rotate"), for: .normal)
+        rotateButton.addTarget(self, action: #selector(rotateButtonTap), for: .touchUpInside)
         
+        view.addSubview(rotateButton)
+        rotateButton.snp.makeConstraints { (make) in
+            make.height.equalTo(40)
+            make.width.equalTo(40)
+            make.leading.equalToSuperview().offset(10)
+            make.centerY.equalTo(cameraButton)
+        }
+        
+        zoomInButton.setImage(UIImage(named: "zoomIn"), for: .normal)
+        zoomInButton.addTarget(self, action: #selector(zoomInTap), for: .touchUpInside)
+        
+        view.addSubview(zoomInButton)
+        zoomInButton.snp.makeConstraints { (make) in
+            make.height.equalTo(40)
+            make.width.equalTo(40)
+            make.trailing.equalToSuperview().offset(-10)
+            make.centerY.equalTo(cameraButton)
+        }
+        
+        zoomOutButton.setImage(UIImage(named: "zoomOut"), for: .normal)
+        zoomOutButton.addTarget(self, action: #selector(zoomOutTap), for: .touchUpInside)
+        
+        view.addSubview(zoomOutButton)
+        zoomOutButton.snp.makeConstraints { (make) in
+            make.height.equalTo(40)
+            make.width.equalTo(40)
+            make.trailing.equalTo(zoomInButton.snp.leading).offset(-10)
+            make.centerY.equalTo(cameraButton)
+        }
         
         
     }
     override func viewDidDisappear(_ animated: Bool) {
-//        if captureSession.isRunning {
-//            captureSession.stopRunning()
-//        } else {
-//            captureSession.startRunning()
-//        }
+        super.viewDidDisappear(animated)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: cameraPosition)
+        loadPreview()
+    }
+    
+    @objc func rotateButtonTap() {
+        if cameraPosition == .back {
+            cameraPosition = .front
+        } else {
+            cameraPosition = .back
+        }
+        loadPreview()
+    }
+    
+    func loadPreview() {
+        device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: cameraPosition)
+        if cameraPosition == .front, device == nil {
+            device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+            cameraPosition = .back
+            rotateButton.isEnabled = false
+        }
         
         if let preInput = captureSession.inputs.first {
             captureSession.removeInput(preInput)
@@ -92,10 +181,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                     
                     cameraOutput.isHighResolutionCaptureEnabled = self.highResolutionEnabled
                     captureSession.addOutput(cameraOutput)
-                    
-                    
-                    // Next, the previewLayer is setup to show the camera content with the size of the view.
-                    
                     previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
                     previewLayer.frame = previewView.bounds
                     previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
@@ -108,6 +193,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             }
         }
     }
+    
+    
     
     @objc func makeSnapshot() {
         print("_____")
@@ -127,13 +214,10 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         
         
         if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
-            print(UIImage(data: dataImage)!.size) // Your Image
-           
-            
+            print(UIImage(data: dataImage)!.size)
             UIImageWriteToSavedPhotosAlbum(UIImage(data: dataImage)!, nil, nil, nil)
-            let presenter = PresentImageViewController()
-            presenter.imageForPresent = UIImage(data: dataImage)
-            self.present(presenter, animated: true, completion: nil)
+            let vc = CameraImageViewController(presentImage: UIImage(data: dataImage)!)
+            navigationController?.pushViewController(vc, animated: true)
         }
         
     }

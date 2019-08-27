@@ -11,7 +11,7 @@ import Photos
 import SnapKit
 import NVActivityIndicatorView
 
-class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, Sharer {
     
     var sideSize: CGFloat = 80
     var collectionView: UICollectionView!
@@ -197,6 +197,16 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: sideSize, height: sideSize)
+    }
+    
+    // MARK: - Sharer
+    
+    func share() {
+        guard let imageForShare = currentImage else {
+            return
+        }
+        let sharer = ShareViewController(shareImage: imageForShare)
+        navigationController?.pushViewController(sharer, animated: true)
     }
 
 }

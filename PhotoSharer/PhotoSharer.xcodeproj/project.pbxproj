@@ -17,6 +17,11 @@
 		D33F7E9F2310030E00AB4755 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */; };
 		D33F7EA12310094800AB4755 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7EA02310094800AB4755 /* CameraViewController.swift */; };
 		D33F7EA32310311C00AB4755 /* PresentImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */; };
+		D35DBC6A2314FFD30044017D /* Sharer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35DBC692314FFD30044017D /* Sharer.swift */; };
+		D35DBC6C231502030044017D /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35DBC6B231502030044017D /* ShareViewController.swift */; };
+		D35DBC6E231507550044017D /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35DBC6D231507550044017D /* SwitchCell.swift */; };
+		D35DBC7023150B140044017D /* TextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35DBC6F23150B140044017D /* TextViewCell.swift */; };
+		D35DBC7623154C680044017D /* CameraImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35DBC7523154C680044017D /* CameraImageViewController.swift */; };
 		EFFDDB1604C081A1F3BBFC8D /* Pods_PhotoSharer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 429D85C226F1C716B5DFE735 /* Pods_PhotoSharer.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +62,11 @@
 		D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		D33F7EA02310094800AB4755 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentImageViewController.swift; sourceTree = "<group>"; };
+		D35DBC692314FFD30044017D /* Sharer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharer.swift; sourceTree = "<group>"; };
+		D35DBC6B231502030044017D /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		D35DBC6D231507550044017D /* SwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
+		D35DBC6F23150B140044017D /* TextViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewCell.swift; sourceTree = "<group>"; };
+		D35DBC7523154C680044017D /* CameraImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +146,11 @@
 				D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */,
 				D33F7EA02310094800AB4755 /* CameraViewController.swift */,
 				D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */,
+				D35DBC692314FFD30044017D /* Sharer.swift */,
+				D35DBC6B231502030044017D /* ShareViewController.swift */,
+				D35DBC6D231507550044017D /* SwitchCell.swift */,
+				D35DBC6F23150B140044017D /* TextViewCell.swift */,
+				D35DBC7523154C680044017D /* CameraImageViewController.swift */,
 			);
 			path = PhotoSharer;
 			sourceTree = "<group>";
@@ -352,10 +367,15 @@
 			files = (
 				D33F7E9F2310030E00AB4755 /* TabBarViewController.swift in Sources */,
 				D33F7EA12310094800AB4755 /* CameraViewController.swift in Sources */,
+				D35DBC6E231507550044017D /* SwitchCell.swift in Sources */,
 				D33F7EA32310311C00AB4755 /* PresentImageViewController.swift in Sources */,
+				D35DBC7623154C680044017D /* CameraImageViewController.swift in Sources */,
 				D33F7E9C230FE62000AB4755 /* ImagePickerCell.swift in Sources */,
 				D33F7E70230FD53A00AB4755 /* ImagePickerViewController.swift in Sources */,
 				D33F7E6E230FD53A00AB4755 /* AppDelegate.swift in Sources */,
+				D35DBC7023150B140044017D /* TextViewCell.swift in Sources */,
+				D35DBC6C231502030044017D /* ShareViewController.swift in Sources */,
+				D35DBC6A2314FFD30044017D /* Sharer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

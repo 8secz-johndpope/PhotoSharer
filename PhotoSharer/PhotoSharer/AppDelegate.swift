@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
+import TwitterKit
+import FacebookCore
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        
         
         window = UIWindow(frame: UIScreen.main.bounds)
         let mainController = TabBarViewController()
@@ -23,8 +28,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
+        IQKeyboardManager.shared.enable = true
+        
+        //TWTRTwitter.sharedInstance().start(withConsumerKey: <#T##String#>, consumerSecret: <#T##String#>)
+        
+        
         
         return true
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return SDKApplicationDelegate.shared.application(app, open: url, options: options)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
