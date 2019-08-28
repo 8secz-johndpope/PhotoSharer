@@ -30,15 +30,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         IQKeyboardManager.shared.enable = true
         
-        //TWTRTwitter.sharedInstance().start(withConsumerKey: <#T##String#>, consumerSecret: <#T##String#>)
-        
-        
-        
+        TWTRTwitter.sharedInstance().start(withConsumerKey: "dZDhFREuos4YfMGm4Tplx4TuC" , consumerSecret: "RDAMJFFs1TbC9AMYAdrNDc0rw2Jxfmu0nRjJTsFeb8x0gKmSgb")
         return true
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return SDKApplicationDelegate.shared.application(app, open: url, options: options)
+        let facebookOpen = SDKApplicationDelegate.shared.application(app, open: url, options: options)
+        let twitterOpen =  TWTRTwitter.sharedInstance().application(app, open: url, options: options)
+        return facebookOpen || twitterOpen
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

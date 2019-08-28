@@ -10,18 +10,18 @@ import UIKit
 
 class TabBarViewController: UITabBarController {
 
-    let firstViewController = ImagePickerViewController()
-    let secondViewController = CameraViewController()
+    let imagePickerVC = ImagePickerViewController()
+    let cameraVC = CameraViewController()
     
     //MARK: - UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        firstViewController.tabBarItem = UITabBarItem(title: "Library", image: UIImage(named: "photoLibrary"), tag: 1)
+        imagePickerVC.tabBarItem = UITabBarItem(title: "Library", image: UIImage(named: "photoLibrary"), tag: 1)
         
-        secondViewController.tabBarItem = UITabBarItem(title: "Camera", image: UIImage(named: "photoCamera"), tag: 2)
-        let tabBarList = [firstViewController, secondViewController]
+        cameraVC.tabBarItem = UITabBarItem(title: "Camera", image: UIImage(named: "photoCamera"), tag: 2)
+        let tabBarList = [imagePickerVC, cameraVC]
         viewControllers = tabBarList
         
         let shareButton = UIButton(type: .system)
@@ -35,7 +35,7 @@ class TabBarViewController: UITabBarController {
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if(item.tag == 1) {
-            firstViewController.reloadAssets()
+            imagePickerVC.reloadAssets()
             navigationItem.rightBarButtonItem?.isEnabled = true
         }
         else if(item.tag == 2) {

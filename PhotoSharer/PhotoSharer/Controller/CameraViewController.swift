@@ -31,7 +31,11 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     let previewView = UIView()
     
     
-    var device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+    let backDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+    
+    let frontDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front)
+    
+    var currentDevice: AVCaptureDevice!
     
     var scale: CGFloat = 1
     
@@ -122,11 +126,28 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     // MARK: - Action
     
     func loadPreview() {
-        device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: cameraPosition)
-        if cameraPosition == .front, device == nil {
-            device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
-            cameraPosition = .back
-            rotateButton.isEnabled = false
+        
+        guard frontDevice != nil || backDevice != nil else {
+            showBackAlert()
+            return
+        }
+        
+        if cameraPosition == .back {
+            if backDevice != nil {
+                currentDevice = backDevice
+            } else {
+                showCameraAlert(cameraPosition)
+                cameraPosition = .front
+                currentDevice = frontDevice
+            }
+        } else {
+            if frontDevice != nil {
+                currentDevice = frontDevice
+            } else {
+                showCameraAlert(cameraPosition)
+                cameraPosition = .back
+                currentDevice = backDevice
+            }
         }
         
         if let preInput = captureSession.inputs.first {
@@ -134,7 +155,7 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             print("remove")
         }
         
-        if let input = try? AVCaptureDeviceInput(device: device!) {
+        if let input = try? AVCaptureDeviceInput(device: currentDevice) {
             if (captureSession.canAddInput(input)) {
                 captureSession.addInput(input)
                 if (captureSession.canAddOutput(cameraOutput)) {
@@ -171,9 +192,9 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         
         
         do {
-            try device?.lockForConfiguration()
-            device?.videoZoomFactor = scale
-            device?.unlockForConfiguration()
+            try currentDevice.lockForConfiguration()
+            currentDevice.videoZoomFactor = scale
+            currentDevice.unlockForConfiguration()
         } catch {
             print(error)
         }
@@ -204,6 +225,36 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                              kCVPixelBufferHeightKey as String: 160]
         settings.previewPhotoFormat = previewFormat
         cameraOutput.capturePhoto(with: settings, delegate: self)
+    }
+    
+    func backToImagePicker() {
+        if let parentTabBar = parent as? TabBarViewController {
+            if let imagePickerIndex = parentTabBar.viewControllers?.firstIndex(of: parentTabBar.imagePickerVC) {
+                parentTabBar.selectedIndex = imagePickerIndex
+                parentTabBar.navigationItem.rightBarButtonItem?.isEnabled = true
+            }
+        }
+    }
+    
+    func showBackAlert() {
+        let alert = UIAlertController(title: "Info", message: "No camera available, you will be returned to the photo library", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+            self.backToImagePicker()
+        }))
+        present(alert, animated: true)
+    }
+    
+    func showCameraAlert(_ position: AVCaptureDevice.Position) {
+        var positionString = ""
+        if position == .back {
+            positionString = "back"
+        } else {
+            positionString = "front"
+        }
+        let alert = UIAlertController(title: "Info", message: "No \(positionString) camera available, camera will be switched", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true)
     }
     
     //MARK: - AVCapturePhotoCaptureDelegate

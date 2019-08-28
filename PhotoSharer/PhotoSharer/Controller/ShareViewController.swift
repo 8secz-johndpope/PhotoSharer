@@ -24,6 +24,9 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         case twitter = "Twitter"
     }
     
+    let facebookIndex = 0
+    let twitterIndex = 1
+    
     var items: [item] = [.photo, .description, .share]
     var socials: [social] = [.facebook, .twitter]
     var shareTo: [Bool] = []
@@ -86,9 +89,105 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @objc func shareButtonTap() {
         checkSelections()
         guard shareTo.contains(true) else {
+            showAlertWith(title: "Info", message: "You have to choose where to share")
             return
         }
         share()
+    }
+    
+    func showAlertWith(title: String, message: String, actions: [UIAlertAction] = []) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        if actions.count == 0 {
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        } else {
+            for action in actions {
+                alert.addAction(action)
+            }
+        }
+        present(alert, animated: true)
+    }
+    
+    func shareToFacebookIfNeeded(with descriptionText: String, completion: @escaping () -> Void) {
+        guard shareTo[facebookIndex] else {
+            completion()
+            return
+        }
+        var photo = Photo(image: shareImage, userGenerated: true)
+        photo.caption = descriptionText
+        var content = PhotoShareContent()
+        content.photos.append(photo)
+        let shareDialog = ShareDialog(content: content)
+        shareDialog.mode = .automatic
+        shareDialog.failsOnInvalidData = true
+        shareDialog.completion = { result in
+            
+            switch result {
+            case .success(_):
+                print("Success")
+                break
+            case .failed(_):
+                print("Failed")
+                break
+            case .cancelled:
+                print("Cancelled")
+                break
+            }
+            completion()
+        }
+        do {
+            try shareDialog.show()
+        } catch {
+            let action = UIAlertAction(title: "OK", style: .default, handler: {(_) in
+                completion()})
+            showAlertWith(title: "Error", message: "Something went wrong with facebook sharing", actions: [action])
+            print(error)
+        }
+    }
+    
+    
+    func shareToTwitterIfNeeded(with descriptionText: String, completion: @escaping () -> Void) {
+        guard shareTo[twitterIndex] else {
+            completion()
+            return
+        }
+        if TWTRTwitter.sharedInstance().sessionStore.hasLoggedInUsers() {
+            let composer = TWTRComposer()
+            composer.setText(descriptionText)
+            composer.setImage(shareImage)
+            
+            composer.show(from: self) { (result) in
+                switch result {
+                    
+                case .cancelled:
+                    print("Cancelled")
+                case .done:
+                    print("Done")
+                }
+                completion()
+            }
+        } else {
+            TWTRTwitter.sharedInstance().logIn { session, error in
+                if session != nil {
+                    let composer = TWTRComposer()
+                    composer.setText(descriptionText)
+                    composer.setImage(self.shareImage)
+                    
+                    composer.show(from: self) { (result) in
+                        switch result {
+                            
+                        case .cancelled:
+                            print("Cancelled")
+                        case .done:
+                            print("Done")
+                        }
+                        completion()
+                    }
+                } else {
+                    self.showAlertWith(title: "No Twitter Accounts Available", message: "You must log in before presenting a composer.")
+                    completion()
+                }
+            }
+        }
     }
     
     // MARK: - Sharer
@@ -100,56 +199,16 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
             descriptionText = descriptionCell.textView.text
         }
         
-        if shareTo[socials.firstIndex(of: .facebook)!] {
-            var photo = Photo(image: shareImage, userGenerated: true)
-            photo.caption = descriptionText
-            var content = PhotoShareContent()
-            content.photos.append(photo)
-            let shareDialog = ShareDialog(content: content)
-            shareDialog.mode = .automatic
-            shareDialog.failsOnInvalidData = true
-            shareDialog.completion = { result in
-                switch result {
-                    
-                case .success(_):
-                    break
-                case .failed(_):
-                    break
-                case .cancelled:
-                    break
+        shareToFacebookIfNeeded(with: descriptionText) {
+            self.shareToTwitterIfNeeded(with: descriptionText, completion: {
+                if let tabBarVC = self.navigationController?.viewControllers.first(where: { (vc) -> Bool in
+                    return vc is TabBarViewController
+                }) {
+                    self.navigationController?.popToViewController(tabBarVC, animated: true)
+                } else {
+                    self.navigationController?.popViewController(animated: true)
                 }
-            }
-            
-            do {
-                try shareDialog.show()
-            } catch {
-                print(error)
-            }
-            
-            
-        }
-        if shareTo[socials.firstIndex(of: .twitter)!] {
-            //        let composer = TWTRComposer()
-            //        composer.setText(descriptionText)
-            //        composer.setImage(shareImage)
-            //
-            //        composer.show(from: navigationController!) { (result) in
-            //            switch result {
-            //
-            //            case .cancelled:
-            //                print("Cancelled")
-            //            case .done:
-            //                print("Done")
-            //            }
-            //        }
-        }
-        
-        if let tabBarVC = navigationController?.viewControllers.first(where: { (vc) -> Bool in
-            return vc is TabBarViewController
-        }) {
-            navigationController?.popToViewController(tabBarVC, animated: true)
-        } else {
-            navigationController?.popViewController(animated: true)
+            })
         }
         
     }
@@ -182,6 +241,9 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let social = socials[indexPath.row]
             let cell = tableView.dequeueReusableCell(withIdentifier: switchCellIdentifier) as! SwitchCell
             cell.titleLabel.text = social.rawValue
+            if social == .facebook {
+                cell.titleLabel.text = social.rawValue + "(installed app need)"
+            }
             return cell
         }
     }
