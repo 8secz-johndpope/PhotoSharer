@@ -25,8 +25,8 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     var tabBarHeight: CGFloat {
         return tabBarController?.tabBar.frame.height ?? 0
     }
-
-
+    
+    
     fileprivate var assets: PHFetchResult<AnyObject>?
     
     // MARK: - UIViewController
@@ -72,7 +72,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             make.trailing.equalToSuperview()
             make.top.equalTo(imageButton.snp.bottom)
         }
-
+        
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             reloadAssets()
         } else {
@@ -95,7 +95,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         }
     }
     
-
+    
     // MARK: - Actions
     
     @objc func imageButtonTap() {
@@ -136,20 +136,22 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func reloadAssets() {
-        NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData, nil)
-        assets = nil
-        assets = (PHAsset.fetchAssets(with: PHAssetMediaType.image, options: fetchOptions()) as! PHFetchResult<AnyObject>)
-        collectionView.reloadData()
-        
-        PHImageManager.default().requestImage(for: assets?[0] as! PHAsset, targetSize: CGSize(width: view.frame.width, height: view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
-            NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
-            guard image != nil else {
-                return
+        DispatchQueue.main.async {
+            NVActivityIndicatorPresenter.sharedInstance.startAnimating(self.activityData, nil)
+            self.assets = nil
+            self.assets = (PHAsset.fetchAssets(with: PHAssetMediaType.image, options: self.fetchOptions()) as! PHFetchResult<AnyObject>)
+            
+            self.collectionView.reloadData()
+            PHImageManager.default().requestImage(for: self.assets?[0] as! PHAsset, targetSize: CGSize(width: self.view.frame.width, height: self.view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
+                NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
+                guard image != nil else {
+                    return
+                }
+                self.imageButton.setImage(image, for: .normal)
+                self.currentImage = image
+                print(self.currentImage ?? "N/A")
+                
             }
-
-            self.imageButton.setImage(image, for: .normal)
-            self.currentImage = image
-            print(self.currentImage ?? "N/A")
         }
         
     }
@@ -175,8 +177,9 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             guard image != nil else {
                 return
             }
-
-            (cell as! ImagePickerCell).image = image
+            DispatchQueue.main.async {
+                (cell as! ImagePickerCell).image = image
+            }
         }
     }
     
@@ -196,9 +199,12 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             guard image != nil else {
                 return
             }
-            self.imageButton.setImage(image, for: .normal)
-            self.currentImage = image
-            print(self.currentImage)
+            DispatchQueue.main.async {
+                self.imageButton.setImage(image, for: .normal)
+                self.currentImage = image
+                print(self.currentImage ?? "N/A")
+            }
+            
         }
     }
     
@@ -217,6 +223,6 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         let sharer = ShareViewController(shareImage: imageForShare)
         navigationController?.pushViewController(sharer, animated: true)
     }
-
+    
 }
 
