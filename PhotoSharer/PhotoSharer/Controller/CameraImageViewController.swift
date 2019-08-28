@@ -9,10 +9,6 @@
 import UIKit
 
 class CameraImageViewController: UIViewController, Sharer {
-    func share() {
-        let sharer = ShareViewController(shareImage: imageForPresent)
-        navigationController?.pushViewController(sharer, animated: true)
-    }
     var imageForPresent: UIImage
     var imageView = UIImageView()
     init(presentImage: UIImage) {
@@ -23,6 +19,8 @@ class CameraImageViewController: UIViewController, Sharer {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    //MARK: - UIViewController
     
     override func loadView() {
         super.loadView()
@@ -44,6 +42,7 @@ class CameraImageViewController: UIViewController, Sharer {
         
     }
     
+    //MARK: - Actions
 
     @objc func shareButtonTap() {
         share()
@@ -51,10 +50,12 @@ class CameraImageViewController: UIViewController, Sharer {
     @objc func cancelButtonTap() {
         navigationController?.popViewController(animated: true)
     }
-        
-        
     
-
-
+    //MARK: - Sharer
+    
+    func share() {
+        let sharer = ShareViewController(shareImage: imageForPresent)
+        navigationController?.pushViewController(sharer, animated: true)
+    }
 
 }

@@ -137,20 +137,13 @@
 		D33F7E6C230FD53A00AB4755 /* PhotoSharer */ = {
 			isa = PBXGroup;
 			children = (
+				D35C06DF231656C100F01BD2 /* Protocol */,
+				D35C06DD2316563300F01BD2 /* View */,
+				D35C06DC231655F500F01BD2 /* Controller */,
 				D33F7E6D230FD53A00AB4755 /* AppDelegate.swift */,
-				D33F7E6F230FD53A00AB4755 /* ImagePickerViewController.swift */,
 				D33F7E74230FD53B00AB4755 /* Assets.xcassets */,
 				D33F7E76230FD53B00AB4755 /* LaunchScreen.storyboard */,
 				D33F7E79230FD53C00AB4755 /* Info.plist */,
-				D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */,
-				D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */,
-				D33F7EA02310094800AB4755 /* CameraViewController.swift */,
-				D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */,
-				D35DBC692314FFD30044017D /* Sharer.swift */,
-				D35DBC6B231502030044017D /* ShareViewController.swift */,
-				D35DBC6D231507550044017D /* SwitchCell.swift */,
-				D35DBC6F23150B140044017D /* TextViewCell.swift */,
-				D35DBC7523154C680044017D /* CameraImageViewController.swift */,
 			);
 			path = PhotoSharer;
 			sourceTree = "<group>";
@@ -171,6 +164,37 @@
 				D33F7E8F230FD53C00AB4755 /* Info.plist */,
 			);
 			path = PhotoSharerUITests;
+			sourceTree = "<group>";
+		};
+		D35C06DC231655F500F01BD2 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				D33F7E9E2310030E00AB4755 /* TabBarViewController.swift */,
+				D33F7E6F230FD53A00AB4755 /* ImagePickerViewController.swift */,
+				D33F7EA02310094800AB4755 /* CameraViewController.swift */,
+				D35DBC7523154C680044017D /* CameraImageViewController.swift */,
+				D35DBC6B231502030044017D /* ShareViewController.swift */,
+				D33F7EA22310311C00AB4755 /* PresentImageViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		D35C06DD2316563300F01BD2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D33F7E9B230FE62000AB4755 /* ImagePickerCell.swift */,
+				D35DBC6D231507550044017D /* SwitchCell.swift */,
+				D35DBC6F23150B140044017D /* TextViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D35C06DF231656C100F01BD2 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				D35DBC692314FFD30044017D /* Sharer.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

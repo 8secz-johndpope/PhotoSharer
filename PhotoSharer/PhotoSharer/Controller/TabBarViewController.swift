@@ -13,6 +13,8 @@ class TabBarViewController: UITabBarController {
     let firstViewController = ImagePickerViewController()
     let secondViewController = CameraViewController()
     
+    //MARK: - UIViewController
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,13 +33,6 @@ class TabBarViewController: UITabBarController {
         navigationItem.titleView = titleLabel
     }
     
-    @objc func shareButtonTap() {
-        print("Share")
-        if let sharer = selectedViewController as? Sharer {
-            sharer.share()
-        }
-    }
-    
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if(item.tag == 1) {
             firstViewController.reloadAssets()
@@ -45,6 +40,15 @@ class TabBarViewController: UITabBarController {
         }
         else if(item.tag == 2) {
             navigationItem.rightBarButtonItem?.isEnabled = false
+        }
+    }
+    
+    //MARK: - Actions
+    
+    @objc func shareButtonTap() {
+        print("Share")
+        if let sharer = selectedViewController as? Sharer {
+            sharer.share()
         }
     }
     

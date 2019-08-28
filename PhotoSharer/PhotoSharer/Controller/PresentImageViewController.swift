@@ -26,6 +26,8 @@ class PresentImageViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - UIViewController
+    
     override func loadView() {
         super.loadView()
         view.backgroundColor = .white
@@ -50,6 +52,8 @@ class PresentImageViewController: UIViewController {
             imageButton.addTarget(self, action: #selector(imageButtonTap), for: .touchUpInside)
         }
     }
+    
+    //MARK: - Actions
     
     @objc func imageButtonTap() {
         self.dismiss(animated: true, completion: nil)

@@ -13,45 +13,6 @@ import FacebookShare
 
 class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Sharer {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return items.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let item = items[section]
-        switch item {
-        case .photo,
-             .description:
-            return 1
-        case .share:
-            return socials.count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = items[indexPath.section]
-        switch item {
-        case .photo:
-            let cell = UITableViewCell()
-            cell.imageView?.image = shareImage
-            cell.tag = 999
-            return cell
-        case .description:
-            let cell = tableView.dequeueReusableCell(withIdentifier: textViewCellIdentifier) as! TextViewCell
-            return cell
-        case .share:
-            let social = socials[indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: switchCellIdentifier) as! SwitchCell
-            cell.titleLabel.text = social.rawValue
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let item = items[section]
-        return item.rawValue
-    }
-    
     enum item: String {
         case photo = "Photo"
         case description = "Description"
@@ -82,6 +43,8 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - UIViewController
+    
     override func loadView() {
         super.loadView()
         view.backgroundColor = .white
@@ -110,6 +73,8 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
     }
     
+    //MARK: - Actions
+    
     func checkSelections() {
         shareTo = []
         for i in 0..<socials.count {
@@ -125,6 +90,8 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         share()
     }
+    
+    // MARK: - Sharer
     
     func share() {
         print("Share")
@@ -187,7 +154,51 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     
+    //MARK: - UITableViewDataSource
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let item = items[section]
+        switch item {
+        case .photo,
+             .description:
+            return 1
+        case .share:
+            return socials.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let item = items[indexPath.section]
+        switch item {
+        case .photo:
+            let cell = UITableViewCell()
+            cell.imageView?.image = shareImage
+            cell.tag = 999
+            return cell
+        case .description:
+            let cell = tableView.dequeueReusableCell(withIdentifier: textViewCellIdentifier) as! TextViewCell
+            return cell
+        case .share:
+            let social = socials[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: switchCellIdentifier) as! SwitchCell
+            cell.titleLabel.text = social.rawValue
+            return cell
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let item = items[section]
+        return item.rawValue
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return items.count
+    }
+    
+    //MARK: - UITableViewDelegate
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         if let photoCell = tableView.cellForRow(at: indexPath), photoCell.tag == 999 {
             let presenter = PresentImageViewController(presentImage: photoCell.imageView?.image, autoDismiss: false)
             present(presenter, animated: true)

@@ -139,7 +139,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
 
             self.imageButton.setImage(image, for: .normal)
             self.currentImage = image
-            print(self.currentImage)
+            print(self.currentImage ?? "N/A")
         }
         
     }
@@ -172,7 +172,6 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     private func requestOptions() -> PHImageRequestOptions {
         let requestOptions = PHImageRequestOptions()
-        // 2
         requestOptions.isSynchronous = true
         requestOptions.deliveryMode = .highQualityFormat
         return requestOptions

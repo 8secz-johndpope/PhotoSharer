@@ -35,42 +35,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     var scale: CGFloat = 1
     
-    
-    
-    func changeScaleTo(_ scale: CGFloat) {
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(0.01)
-        previewLayer.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
-        CATransaction.commit()
-        
-        
-        do {
-            try device?.lockForConfiguration()
-            device?.videoZoomFactor = scale
-            device?.unlockForConfiguration()
-        } catch {
-            print(error)
-        }
-    }
-    
-    @objc func zoomInTap() {
-        guard scale < 4 else {
-            return
-        }
-        scale += 0.25
-        changeScaleTo(scale)
-    }
-    
-    @objc func zoomOutTap() {
-        guard scale > 1 else {
-            return
-        }
-        scale -= 0.25
-        changeScaleTo(scale)
-    }
-    
-    
-    
+    //MARK: - UIViewController
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -152,14 +118,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         loadPreview()
     }
     
-    @objc func rotateButtonTap() {
-        if cameraPosition == .back {
-            cameraPosition = .front
-        } else {
-            cameraPosition = .back
-        }
-        loadPreview()
-    }
+    
+    // MARK: - Action
     
     func loadPreview() {
         device = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: cameraPosition)
@@ -194,7 +154,46 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         }
     }
     
+    @objc func rotateButtonTap() {
+        if cameraPosition == .back {
+            cameraPosition = .front
+        } else {
+            cameraPosition = .back
+        }
+        loadPreview()
+    }
     
+    func changeScaleTo(_ scale: CGFloat) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.01)
+        previewLayer.setAffineTransform(CGAffineTransform(scaleX: scale, y: scale))
+        CATransaction.commit()
+        
+        
+        do {
+            try device?.lockForConfiguration()
+            device?.videoZoomFactor = scale
+            device?.unlockForConfiguration()
+        } catch {
+            print(error)
+        }
+    }
+    
+    @objc func zoomInTap() {
+        guard scale < 4 else {
+            return
+        }
+        scale += 0.25
+        changeScaleTo(scale)
+    }
+    
+    @objc func zoomOutTap() {
+        guard scale > 1 else {
+            return
+        }
+        scale -= 0.25
+        changeScaleTo(scale)
+    }
     
     @objc func makeSnapshot() {
         print("_____")
@@ -204,8 +203,10 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                              kCVPixelBufferWidthKey as String: 160,
                              kCVPixelBufferHeightKey as String: 160]
         settings.previewPhotoFormat = previewFormat
-        self.cameraOutput.capturePhoto(with: settings, delegate: self)
+        cameraOutput.capturePhoto(with: settings, delegate: self)
     }
+    
+    //MARK: - AVCapturePhotoCaptureDelegate
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         if let error = error {
