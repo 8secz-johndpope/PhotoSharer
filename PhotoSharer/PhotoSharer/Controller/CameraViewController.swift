@@ -268,7 +268,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         guard let dataImage = imageData else {
             return
         }
-        
         guard let image = UIImage(data: dataImage) else {
             return
         }
@@ -278,22 +277,6 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         let vc = CameraImageViewController(presentImage: image)
         navigationController?.pushViewController(vc, animated: true)
     }
-    
-//    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-//        if let error = error {
-//            print(error.localizedDescription)
-//        }
-//
-//
-//        if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
-//            print(UIImage(data: dataImage)!.size)
-//            UIImageWriteToSavedPhotosAlbum(UIImage(data: dataImage)!, nil, nil, nil)
-//            let vc = CameraImageViewController(presentImage: UIImage(data: dataImage)!)
-//            navigationController?.pushViewController(vc, animated: true)
-//        }
-//
-//    }
-    
     
 }
 

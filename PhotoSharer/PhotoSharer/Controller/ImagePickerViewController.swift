@@ -95,31 +95,8 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        if UIDevice.current.orientation.isLandscape {
-            resizeWhenRotate(to: size)
-            print("Landscape")
-        } else {
-            resizeWhenRotate(to: size)
-            print("Portrait")
-        }
-    }
-    
 
     // MARK: - Actions
-    
-    func resizeWhenRotate(to size: CGSize) {
-        small = true
-        sideSize = min((size.width / 3) - 20, 100)
-        print(sideSize)
-        imageButton.snp.updateConstraints { (update) in
-            update.height.equalTo((size.height / 2) - 40)
-        }
-        UIView.animate(withDuration: 0.3) {
-            self.view.layoutIfNeeded()
-        }
-    }
     
     @objc func imageButtonTap() {
         if small {
