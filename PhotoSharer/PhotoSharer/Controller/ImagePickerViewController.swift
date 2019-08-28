@@ -21,6 +21,11 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     var currentImage: UIImage?
     
     var small = true
+    
+    var tabBarHeight: CGFloat {
+        return tabBarController?.tabBar.frame.height ?? 0
+    }
+
 
     fileprivate var assets: PHFetchResult<AnyObject>?
     
@@ -83,15 +88,48 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        sideSize = (view.frame.width / 3) - 20
+        sideSize = min((view.frame.width / 3) - 20, 100)
+        print(sideSize)
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        if UIDevice.current.orientation.isLandscape {
+            resizeWhenRotate(to: size)
+            print("Landscape")
+        } else {
+            resizeWhenRotate(to: size)
+            print("Portrait")
+        }
+    }
+    
 
     // MARK: - Actions
+    
+    func resizeWhenRotate(to size: CGSize) {
+        sideSize = min((size.width / 3) - 20, 100)
+        print(sideSize)
+        if !small {
+            imageButton.snp.updateConstraints { (update) in
+                update.height.equalTo(size.height - tabBarHeight)
+            }
+        } else {
+            imageButton.snp.updateConstraints { (update) in
+                update.height.equalTo((size.height / 2) - 40)
+            }
+        }
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
     
     @objc func imageButtonTap() {
         if small {
             imageButton.snp.updateConstraints { (update) in
-                update.height.equalTo(view.frame.height)
+                update.height.equalTo(view.frame.height - tabBarHeight)
             }
         } else {
             imageButton.snp.updateConstraints { (update) in
