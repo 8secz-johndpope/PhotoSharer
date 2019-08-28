@@ -22,6 +22,11 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     var small = true
 
+    var tabBarHeight: CGFloat {
+        return tabBarController?.tabBar.frame.height ?? 0
+    }
+    
+    
     fileprivate var assets: PHFetchResult<AnyObject>?
     
     // MARK: - UIViewController
@@ -58,14 +63,10 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         
         
         collectionView.snp.makeConstraints { (make) in
-            if #available(iOS 11.0, *) {
-                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-            } else {
-                make.bottom.equalTo(bottomLayoutGuide.snp.top)
-            }
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.top.equalTo(imageButton.snp.bottom)
+            make.height.equalTo((view.frame.height / 2 ) + 40)
         }
 
         if PHPhotoLibrary.authorizationStatus() == .authorized {
@@ -91,7 +92,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     @objc func imageButtonTap() {
         if small {
             imageButton.snp.updateConstraints { (update) in
-                update.height.equalTo(view.frame.height)
+                update.height.equalTo(view.frame.height - self.tabBarHeight)
             }
         } else {
             imageButton.snp.updateConstraints { (update) in
