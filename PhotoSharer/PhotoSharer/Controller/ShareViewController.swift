@@ -60,6 +60,10 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         shareButton.addTarget(self, action: #selector(shareButtonTap), for: .touchUpInside)
         shareButton.setTitle("Share", for: .normal)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: shareButton)
+        let backButton = UIButton(type: .system)
+        backButton.addTarget(self, action: #selector(backButtonTap), for: .touchUpInside)
+        backButton.setTitle("Back", for: .normal)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     
     func setupTableView() {
@@ -93,6 +97,16 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         share()
+    }
+    
+    @objc func backButtonTap() {
+        if let tabBarVC = self.navigationController?.viewControllers.first(where: { (vc) -> Bool in
+            return vc is TabBarViewController
+        }) {
+            self.navigationController?.popToViewController(tabBarVC, animated: true)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     func showAlertWith(title: String, message: String, actions: [UIAlertAction] = []) {
@@ -201,13 +215,6 @@ class ShareViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         shareToFacebookIfNeeded(with: descriptionText) {
             self.shareToTwitterIfNeeded(with: descriptionText, completion: {
-                if let tabBarVC = self.navigationController?.viewControllers.first(where: { (vc) -> Bool in
-                    return vc is TabBarViewController
-                }) {
-                    self.navigationController?.popToViewController(tabBarVC, animated: true)
-                } else {
-                    self.navigationController?.popViewController(animated: true)
-                }
             })
         }
         
