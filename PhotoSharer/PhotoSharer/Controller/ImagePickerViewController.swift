@@ -192,6 +192,18 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let cell = collectionView.cellForItem(at: indexPath)
+        UIView.animate(withDuration: 0.2,
+                       animations: {
+                        cell?.alpha = 0.5
+        }) { (_) in
+            UIView.animate(withDuration: 0.2,
+                           animations: {
+                            cell?.alpha = 1
+            })
+        }
+        
         NVActivityIndicatorPresenter.sharedInstance.startAnimating(activityData, nil)
         
         PHImageManager.default().requestImage(for: assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: view.frame.width, height: view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
