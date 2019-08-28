@@ -110,16 +110,11 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     // MARK: - Actions
     
     func resizeWhenRotate(to size: CGSize) {
+        small = true
         sideSize = min((size.width / 3) - 20, 100)
         print(sideSize)
-        if !small {
-            imageButton.snp.updateConstraints { (update) in
-                update.height.equalTo(size.height - tabBarHeight)
-            }
-        } else {
-            imageButton.snp.updateConstraints { (update) in
-                update.height.equalTo((size.height / 2) - 40)
-            }
+        imageButton.snp.updateConstraints { (update) in
+            update.height.equalTo((size.height / 2) - 40)
         }
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
