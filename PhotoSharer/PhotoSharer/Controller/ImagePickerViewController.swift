@@ -121,10 +121,9 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             break
         case .left,
              .right:
-            guard !small else {
-                return
-            }
-            
+//            guard !small else {
+//                return
+//            }
             guard let indexPath = currentImageIndexPath else {
                 return
             }
