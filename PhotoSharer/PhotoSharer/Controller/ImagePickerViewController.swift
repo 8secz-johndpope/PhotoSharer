@@ -17,11 +17,11 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     var collectionView: UICollectionView!
     let imageButton = UIButton()
     let activityData = ActivityData()
-    
-    var currentImage: UIImage?
+    var noPhotoImage = #imageLiteral(resourceName: "noPhoto")
+    var currentImage = UIImage()
     var currentImageIndexPath: IndexPath?
-    
     var small = true
+    var currentImageisActual = false
     
     var tabBarHeight: CGFloat {
         return tabBarController?.tabBar.frame.height ?? 0
@@ -34,8 +34,8 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        
+        currentImage = noPhotoImage
+        view.backgroundColor = .lightGray
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -86,6 +86,52 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
             }
         }
+        
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        
+        leftSwipe.direction = .left
+        rightSwipe.direction = .right
+        
+        imageButton.addGestureRecognizer(leftSwipe)
+        imageButton.addGestureRecognizer(rightSwipe)
+        imageButton.adjustsImageWhenHighlighted = false
+    }
+    
+    @objc func handleSwipes(_ sender:UISwipeGestureRecognizer) {
+        
+        guard !small else {
+            return
+        }
+        
+        guard let indexPath = currentImageIndexPath else {
+            return
+        }
+        
+        let preCell = collectionView.cellForItem(at: indexPath)
+        preCell?.contentView.layer.borderColor = UIColor.black.cgColor
+        
+        var newIndexPath = indexPath
+        
+        if (sender.direction == .left) {
+            if indexPath.row < (collectionView.numberOfItems(inSection: 0) - 1) {
+                newIndexPath = IndexPath(row: indexPath.row + 1, section: indexPath.section)
+            }
+            print("Swipe Left")
+        }
+        
+        if (sender.direction == .right) {
+            if indexPath.row > 0 {
+                newIndexPath = IndexPath(row: indexPath.row - 1, section: indexPath.section)
+            }
+            print("Swipe Right")
+        }
+        collectionView.cellForItem(at: newIndexPath)?.contentView.layer.borderColor = UIColor.white.cgColor
+        currentImageIndexPath = newIndexPath
+        
+        if newIndexPath != indexPath {
+            setImageWithAnimate(for: newIndexPath, to: sender.direction)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,16 +163,26 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     }
     
     func showNeedAccessMessage() {
-        let alert = UIAlertController(title: "Image picker", message: "App need get access to photos", preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.dismiss(animated: true, completion: nil)
-        }))
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+        })
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: {
             (_) in
             UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-        }))
+        })
+        showAlertWith(title: "Image picker", message: "App need get access to photos", actions: [cancelAction, okAction])
+    }
+    
+    
+    func showAlertWith(title: String, message: String, actions: [UIAlertAction] = []) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        if actions.count == 0 {
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        } else {
+            for action in actions {
+                alert.addAction(action)
+            }
+        }
         present(alert, animated: true)
     }
     
@@ -137,6 +193,80 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         return options
     }
     
+    func setImageWithAnimate(for indexPath: IndexPath, to direction: UISwipeGestureRecognizer.Direction) {
+        guard let indexPath = currentImageIndexPath else {
+            return
+        }
+        
+        print(indexPath.row)
+        DispatchQueue.main.async {
+            NVActivityIndicatorPresenter.sharedInstance.startAnimating(self.activityData, nil)
+            PHImageManager.default().requestImage(for: self.assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: self.view.frame.width, height: self.view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
+                NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
+                var newImage: UIImage
+                if image == nil {
+                    newImage = self.noPhotoImage
+                    self.currentImageisActual = false
+                } else {
+                    newImage = image!
+                    self.currentImageisActual = true
+                }
+                self.nextImageAnimationFor(newImage, to: direction)
+            }
+        }
+    }
+    
+    func nextImageAnimationFor(_ image: UIImage, to direction: UISwipeGestureRecognizer.Direction) {
+        var pathLength: CGFloat = 0
+        
+        if direction == .left {
+            pathLength = -self.view.frame.width
+        } else {
+            pathLength = self.view.frame.width
+        }
+        
+        let imageFrame = self.imageButton.frame
+        
+        let currentImageButton = UIButton()
+        let nextImageButton = UIButton()
+        
+        currentImageButton.frame = imageFrame
+        nextImageButton.frame = CGRect(x: imageFrame.minX - pathLength, y: imageFrame.origin.y, width: imageFrame.width, height: imageFrame.height)
+        
+        currentImageButton.setImage(self.currentImage, for: .normal)
+        nextImageButton.setImage(image, for: .normal)
+        
+        self.view.addSubview(nextImageButton)
+        self.view.addSubview(currentImageButton)
+        
+        currentImageButton.backgroundColor = .clear
+        nextImageButton.backgroundColor = .clear
+        
+        currentImageButton.layer.borderWidth = 1
+        nextImageButton.layer.borderWidth = 1
+        
+        currentImageButton.contentMode = .scaleAspectFit
+        nextImageButton.contentMode = .scaleAspectFit
+        
+        currentImageButton.imageView?.contentMode = .scaleAspectFit
+        nextImageButton.imageView?.contentMode = .scaleAspectFit
+        
+        currentImageButton.adjustsImageWhenHighlighted = false
+        nextImageButton.adjustsImageWhenHighlighted = false
+        
+        self.imageButton.alpha = 0
+        UIView.animate(withDuration: 0.3, animations: {
+            currentImageButton.transform = currentImageButton.transform.translatedBy(x: pathLength, y: 0)
+            nextImageButton.transform = nextImageButton.transform.translatedBy(x: pathLength, y: 0)
+            self.imageButton.setImage(image, for: .normal)
+            self.currentImage = image
+        }, completion: { (_) in
+            self.imageButton.alpha = 1
+            currentImageButton.removeFromSuperview()
+            nextImageButton.removeFromSuperview()
+        })
+    }
+    
     func reloadAssets() {
         DispatchQueue.main.async {
             NVActivityIndicatorPresenter.sharedInstance.startAnimating(self.activityData, nil)
@@ -144,20 +274,25 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             self.assets = (PHAsset.fetchAssets(with: PHAssetMediaType.image, options: self.fetchOptions()) as! PHFetchResult<AnyObject>)
             
             self.collectionView.reloadData()
+            self.collectionView.contentOffset = CGPoint(x: 0, y: 0)
             PHImageManager.default().requestImage(for: self.assets?[0] as! PHAsset, targetSize: CGSize(width: self.view.frame.width, height: self.view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
                 NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
-                guard image != nil else {
-                    return
+                var newImage: UIImage
+                if image == nil {
+                    newImage = self.noPhotoImage
+                    self.currentImageisActual = false
+                } else {
+                    newImage = image!
+                    self.currentImageisActual = true
                 }
-                self.imageButton.setImage(image, for: .normal)
-                self.currentImage = image
+                self.imageButton.setImage(newImage, for: .normal)
+                self.currentImage = newImage
                 self.currentImageIndexPath = IndexPath(row: 0, section: 0)
                 print(self.currentImageIndexPath ?? "N/A")
-                print(self.currentImage ?? "N/A")
+                print(self.currentImage)
                 
             }
         }
-        
     }
     
     // MARK: - UICollectionViewDataSource
@@ -178,8 +313,11 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         PHImageManager.default().requestImage(for: assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: sideSize, height: sideSize), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
-            guard image != nil else {
-                return
+            var newImage: UIImage
+            if image == nil {
+                newImage = self.noPhotoImage
+            } else {
+                newImage = image!
             }
             DispatchQueue.main.async {
                 guard let imageCell = cell as? ImagePickerCell else {
@@ -192,7 +330,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
                 imageCell.backgroundColor = .lightGray
                 imageCell.contentMode = .scaleAspectFit
-                imageCell.image = image
+                imageCell.image = newImage
             }
         }
     }
@@ -228,14 +366,20 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         
         PHImageManager.default().requestImage(for: assets?[indexPath.row] as! PHAsset, targetSize: CGSize(width: view.frame.width, height: view.frame.height), contentMode: .aspectFit, options: self.requestOptions()) { (image: UIImage?, info: [AnyHashable: Any]?) -> Void in
             NVActivityIndicatorPresenter.sharedInstance.stopAnimating(nil)
-            guard image != nil else {
-                return
-            }
             DispatchQueue.main.async {
-                self.imageButton.setImage(image, for: .normal)
-                self.currentImage = image
+                var newImage: UIImage
+                if image == nil {
+                    newImage = self.noPhotoImage
+                    self.currentImageisActual = false
+                } else {
+                    newImage = image!
+                    self.currentImageisActual = true
+                }
+                self.imageButton.setImage(newImage, for: .normal)
+                self.currentImage = newImage
+                self.currentImageIndexPath = indexPath
                 print(self.currentImageIndexPath ?? "N/A")
-                print(self.currentImage ?? "N/A")
+                print(self.currentImage)
             }
             
         }
@@ -250,10 +394,11 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     // MARK: - Sharer
     
     func share() {
-        guard let imageForShare = currentImage else {
+        guard currentImageisActual else {
+            showAlertWith(title: "Info", message: "Failed to upload photo")
             return
         }
-        let sharer = ShareViewController(shareImage: imageForShare)
+        let sharer = ShareViewController(shareImage: currentImage)
         navigationController?.pushViewController(sharer, animated: true)
     }
     
