@@ -34,6 +34,7 @@ class ImagePickerCell: UICollectionViewCell {
     
     func constructor() {
         contentView.addSubview(imageView)
+        imageView.contentMode = .scaleAspectFit
         imageView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }

@@ -19,6 +19,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     let activityData = ActivityData()
     
     var currentImage: UIImage?
+    var currentImageIndexPath: IndexPath?
     
     var small = true
     
@@ -76,13 +77,14 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             reloadAssets()
         } else {
-            PHPhotoLibrary.requestAuthorization({ (status: PHAuthorizationStatus) -> Void in
-                if status == .authorized {
+            PHPhotoLibrary.requestAuthorization { (status) in
+                switch status {
+                case .authorized:
                     self.reloadAssets()
-                } else {
+                default:
                     self.showNeedAccessMessage()
                 }
-            })
+            }
         }
     }
     
@@ -114,10 +116,10 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         small = !small
     }
     
-    fileprivate func showNeedAccessMessage() {
+    func showNeedAccessMessage() {
         let alert = UIAlertController(title: "Image picker", message: "App need get access to photos", preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action: UIAlertAction) -> Void in
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             self.dismiss(animated: true, completion: nil)
         }))
         
@@ -125,7 +127,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             (_) in
             UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
         }))
-        show(alert, sender: nil)
+        present(alert, animated: true)
     }
     
     func fetchOptions() ->  PHFetchOptions {
@@ -149,6 +151,8 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
                 self.imageButton.setImage(image, for: .normal)
                 self.currentImage = image
+                self.currentImageIndexPath = IndexPath(row: 0, section: 0)
+                print(self.currentImageIndexPath ?? "N/A")
                 print(self.currentImage ?? "N/A")
                 
             }
@@ -178,7 +182,17 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
                 return
             }
             DispatchQueue.main.async {
-                (cell as! ImagePickerCell).image = image
+                guard let imageCell = cell as? ImagePickerCell else {
+                    return
+                }
+                if indexPath == self.currentImageIndexPath {
+                    imageCell.contentView.layer.borderColor = UIColor.white.cgColor
+                } else {
+                    imageCell.contentView.layer.borderColor = UIColor.black.cgColor
+                }
+                imageCell.backgroundColor = .lightGray
+                imageCell.contentMode = .scaleAspectFit
+                imageCell.image = image
             }
         }
     }
@@ -193,10 +207,16 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         
+        if let currentIndexPath = currentImageIndexPath {
+            let preCell = collectionView.cellForItem(at: currentIndexPath)
+            preCell?.contentView.layer.borderColor = UIColor.black.cgColor
+        }
+        currentImageIndexPath = indexPath
         let cell = collectionView.cellForItem(at: indexPath)
         UIView.animate(withDuration: 0.2,
                        animations: {
                         cell?.alpha = 0.5
+                        cell?.contentView.layer.borderColor = UIColor.white.cgColor
         }) { (_) in
             UIView.animate(withDuration: 0.2,
                            animations: {
@@ -214,6 +234,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             DispatchQueue.main.async {
                 self.imageButton.setImage(image, for: .normal)
                 self.currentImage = image
+                print(self.currentImageIndexPath ?? "N/A")
                 print(self.currentImage ?? "N/A")
             }
             
