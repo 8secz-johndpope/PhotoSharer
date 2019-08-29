@@ -285,7 +285,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             nextImageButton.transform = nextImageButton.transform.translatedBy(x: pathLength, y: 0)
             self.imageButton.setImage(image, for: .normal)
             self.currentImage = image
-            self.changeCountLabelTextTo(index: (self.currentImageIndexPath?.row ?? 0) + 1, of: self.collectionView.numberOfItems(inSection: 0))
+            self.changeCountLabelTextTo(index: (self.currentImageIndexPath?.row ?? -1) + 1, of: self.collectionView.numberOfItems(inSection: 0))
         }, completion: { (_) in
             self.imageButton.alpha = 1
             currentImageButton.removeFromSuperview()
