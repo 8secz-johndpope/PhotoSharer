@@ -231,7 +231,8 @@ class CameraViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         if let parentTabBar = parent as? TabBarViewController {
             if let imagePickerIndex = parentTabBar.viewControllers?.firstIndex(of: parentTabBar.imagePickerVC) {
                 parentTabBar.selectedIndex = imagePickerIndex
-                parentTabBar.navigationItem.rightBarButtonItem?.isEnabled = true
+                parentTabBar.shareButton.isHidden = false
+                parentTabBar.countLabel.isHidden = false
             }
         }
     }

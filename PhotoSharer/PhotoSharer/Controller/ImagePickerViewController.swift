@@ -285,6 +285,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
             nextImageButton.transform = nextImageButton.transform.translatedBy(x: pathLength, y: 0)
             self.imageButton.setImage(image, for: .normal)
             self.currentImage = image
+            self.changeCountLabelTextTo(index: (self.currentImageIndexPath?.row ?? 0) + 1, of: self.collectionView.numberOfItems(inSection: 0))
         }, completion: { (_) in
             self.imageButton.alpha = 1
             currentImageButton.removeFromSuperview()
@@ -313,11 +314,19 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
                 self.imageButton.setImage(newImage, for: .normal)
                 self.currentImage = newImage
                 self.currentImageIndexPath = IndexPath(row: 0, section: 0)
+                self.changeCountLabelTextTo(index: 1, of: self.collectionView.numberOfItems(inSection: 0))
                 print(self.currentImageIndexPath ?? "N/A")
                 print(self.currentImage)
                 
             }
         }
+    }
+    
+    func changeCountLabelTextTo(index: Int, of count: Int) {
+        guard let tabBarVC = parent as? TabBarViewController else {
+            return
+        }
+        tabBarVC.countLabel.text = "\(index) of \(count)"
     }
     
     // MARK: - UICollectionViewDataSource
@@ -402,6 +411,7 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
                 self.imageButton.setImage(newImage, for: .normal)
                 self.currentImage = newImage
+                self.changeCountLabelTextTo(index: indexPath.row + 1, of: self.collectionView.numberOfItems(inSection: 0))
                 self.currentImageIndexPath = indexPath
                 print(self.currentImageIndexPath ?? "N/A")
                 print(self.currentImage)
