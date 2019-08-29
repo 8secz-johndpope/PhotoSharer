@@ -89,49 +89,75 @@ class ImagePickerViewController: UIViewController, UICollectionViewDelegate, UIC
         
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
         let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        let upSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
+        let downSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes(_:)))
         
         leftSwipe.direction = .left
         rightSwipe.direction = .right
+        upSwipe.direction = .up
+        downSwipe.direction = .down
         
         imageButton.addGestureRecognizer(leftSwipe)
         imageButton.addGestureRecognizer(rightSwipe)
+        imageButton.addGestureRecognizer(upSwipe)
+        imageButton.addGestureRecognizer(downSwipe)
         imageButton.adjustsImageWhenHighlighted = false
     }
     
     @objc func handleSwipes(_ sender:UISwipeGestureRecognizer) {
         
-        guard !small else {
-            return
-        }
-        
-        guard let indexPath = currentImageIndexPath else {
-            return
-        }
-        
-        let preCell = collectionView.cellForItem(at: indexPath)
-        preCell?.contentView.layer.borderColor = UIColor.black.cgColor
-        
-        var newIndexPath = indexPath
-        
-        if (sender.direction == .left) {
-            if indexPath.row < (collectionView.numberOfItems(inSection: 0) - 1) {
-                newIndexPath = IndexPath(row: indexPath.row + 1, section: indexPath.section)
+        switch sender.direction {
+        case .up:
+            guard !small else {
+                return
             }
-            print("Swipe Left")
-        }
-        
-        if (sender.direction == .right) {
-            if indexPath.row > 0 {
-                newIndexPath = IndexPath(row: indexPath.row - 1, section: indexPath.section)
+            imageButtonTap()
+            break
+        case .down:
+            guard small else {
+                return
             }
-            print("Swipe Right")
+            imageButtonTap()
+            break
+        case .left,
+             .right:
+            guard !small else {
+                return
+            }
+            
+            guard let indexPath = currentImageIndexPath else {
+                return
+            }
+            
+            let preCell = collectionView.cellForItem(at: indexPath)
+            preCell?.contentView.layer.borderColor = UIColor.black.cgColor
+            
+            var newIndexPath = indexPath
+            
+            if (sender.direction == .left) {
+                if indexPath.row < (collectionView.numberOfItems(inSection: 0) - 1) {
+                    newIndexPath = IndexPath(row: indexPath.row + 1, section: indexPath.section)
+                }
+                print("Swipe Left")
+            }
+            
+            if (sender.direction == .right) {
+                if indexPath.row > 0 {
+                    newIndexPath = IndexPath(row: indexPath.row - 1, section: indexPath.section)
+                }
+                print("Swipe Right")
+            }
+            collectionView.cellForItem(at: newIndexPath)?.contentView.layer.borderColor = UIColor.white.cgColor
+            currentImageIndexPath = newIndexPath
+            
+            if newIndexPath != indexPath {
+                setImageWithAnimate(for: newIndexPath, to: sender.direction)
+            }
+            break
+        default:
+            break
         }
-        collectionView.cellForItem(at: newIndexPath)?.contentView.layer.borderColor = UIColor.white.cgColor
-        currentImageIndexPath = newIndexPath
-        
-        if newIndexPath != indexPath {
-            setImageWithAnimate(for: newIndexPath, to: sender.direction)
-        }
+       
     }
     
     override func viewWillAppear(_ animated: Bool) {
