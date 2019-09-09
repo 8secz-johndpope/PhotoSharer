@@ -8,6 +8,7 @@
 
 import UIKit
 import SnapKit
+import Photos
 
 class TabBarViewController: UITabBarController {
 
@@ -45,7 +46,18 @@ class TabBarViewController: UITabBarController {
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if(item.tag == 1) {
-            imagePickerVC.reloadAssets()
+            if PHPhotoLibrary.authorizationStatus() == .authorized {
+                imagePickerVC.reloadAssets()
+            } else {
+                PHPhotoLibrary.requestAuthorization { (status) in
+                    switch status {
+                    case .authorized:
+                        self.imagePickerVC.reloadAssets()
+                    default:
+                        self.imagePickerVC.showNeedAccessMessage()
+                    }
+                }
+            }
             shareButton.isHidden = false
             countLabel.isHidden = false
         }
